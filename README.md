@@ -4,6 +4,7 @@ Implementação em CUDA do famoso Automato Celular desenvolvido pelo John Conway
 <p align="center">
   <img src="gol.gif"/>
 </p>
+
 ## Regras
 
 O jogo consiste em quatro regras:
