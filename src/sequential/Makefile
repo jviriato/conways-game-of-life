@@ -1,5 +1,5 @@
 CC=gcc
-CCFLAGS = -Wall -O3
+CFLAGS = -Wall -O3
 
 gol: game-of-life.o
 	$(CC) -o gol game-of-life.o
