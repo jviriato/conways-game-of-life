@@ -1,9 +1,9 @@
-#include <assert.h>
+#include "bmp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
-#include "bmp.h"
+
 void mallocGrid(int ***g, int g_size);
 void print2DArray(int **g, int g_size);
 void randPopulation(int ***g, int g_size);
@@ -68,9 +68,9 @@ void print2DArray(int **g, int g_size) {
 // Retorna a quantidade de vizinhos de uma célula
 int getNeighbors(int ***grid, int i, int j) {
   int numNeighbors;
-  numNeighbors = (*grid)[i + 1][j] + (*grid)[i - 1][j]           // lower upper
-                 + (*grid)[i][j + 1] + (*grid)[i][j - 1]         // right left
-                 + (*grid)[i + 1][j + 1] + (*grid)[i - 1][j - 1] // diagonals
+  numNeighbors = (*grid)[i + 1][j] + (*grid)[i - 1][j]          
+                 + (*grid)[i][j + 1] + (*grid)[i][j - 1]        
+                 + (*grid)[i + 1][j + 1] + (*grid)[i - 1][j - 1] 
                  + (*grid)[i - 1][j + 1] + (*grid)[i + 1][j - 1];
 
   return numNeighbors;
@@ -78,9 +78,12 @@ int getNeighbors(int ***grid, int i, int j) {
 
 // Aplica as regras no mundo
 void crossRules(int ***grid, int ***new_grid, int grid_size) {
+  int **tmpGrid;
+  mallocGrid(&tmpGrid, grid_size);
   for (int i = 1; i <= grid_size; i++) {
     for (int j = 1; j <= grid_size; j++) {
       int numNeighbors = getNeighbors(grid, i, j);
+
       if ((*grid)[i][j] == 1 && numNeighbors < 2)
         (*new_grid)[i][j] = 0;
       else if ((*grid)[i][j] == 1 && (numNeighbors == 2 || numNeighbors == 3))
@@ -118,7 +121,6 @@ void gameLoop(int ***grid, int ***new_grid, int grid_size, int generations,
   for (int gen = 0; gen < generations; gen++) {
     createGhostCells(grid, grid_size);
     crossRules(grid, new_grid, grid_size);
-    // countTotalAlives((*grid), grid_size);
     saveToPic((*grid), (*pic), gen, generations, grid_size);
     swapGrids(grid, new_grid);
   }
@@ -144,16 +146,16 @@ int main(int argc, char const *argv[]) {
     printf("args: generations and grid_size");
     return -1;
   }
-  // unsigned char *pic = new unsigned char[generations * grid_size * grid_size];
-  unsigned char *pic = (unsigned char*)malloc(generations * grid_size * grid_size);
+  unsigned char *pic =
+      (unsigned char *)malloc(generations * grid_size * grid_size);
 
   int **grid;
   int **new_grid;
   mallocGrid(&grid, grid_size);
   mallocGrid(&new_grid, grid_size);
   srand((unsigned long)time(NULL));
-  randPopulation(&grid, grid_size);
   long start_time = wtime();
+  randPopulation(&grid, grid_size);
   gameLoop(&grid, &new_grid, grid_size, generations, &pic);
   long end_time = wtime();
   printf("%ld usec\n", (long)(end_time - start_time));

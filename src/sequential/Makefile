@@ -7,3 +7,4 @@ gol: game-of-life.o
 clean: 
 	-rm -f game-of-life.o
 	-rm -f gol
+	-rm -f *.bmp
